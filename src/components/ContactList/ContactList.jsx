@@ -1,13 +1,47 @@
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import css from './ContactList.module.css';
 import ContactListItem from '../ContactListItem/ContactListItem';
+import { getContacts, getFilter } from 'redux/selectors';
+import { deleteContact } from 'redux/contactSlice';
+// import { Notify } from 'notiflix';
+// import { useEffect } from 'react';
 
-const ContactList = ({ contacts, handleDelete }) => {
+   const getFilteredContacts = (contacts, filter) => {
+     const filterContactsList = contacts.filter(contact => {
+      
+         return contact.name
+          .toLowerCase()
+          .trim()
+          .includes(filter.toLowerCase());
+      });
+
+    //  if (!filterContactsList.length && filter !== "") {
+    //    Notify.info( 'No contacts matching your request' );
+    //  }
+      return filterContactsList;
+    } 
+
+
+export const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
+  const filteredContacts = getFilteredContacts(contacts, filter);
+  
+      const handleDelete = id => {
+    dispatch(deleteContact(id));
+  };
+  
+  // useEffect(() => {
+  //     contacts && localStorage.setItem('contacts', JSON.stringify(contacts));
+  //    }, [contacts]);
+  
+  
   return (
     <div className={css.listSection}>
       <h2 className={css.contactsTitle}>Contacts</h2>
       <ul>
-        {contacts.map(({ id, name, number }) => (
+        {filteredContacts.map(({ id, name, number }) => (
           <ContactListItem
             key={id}
             id={id}
@@ -21,15 +55,5 @@ const ContactList = ({ contacts, handleDelete }) => {
   );
 };
 
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  handleDelete: PropTypes.func.isRequired,
-};
 
-export default ContactList;
+
