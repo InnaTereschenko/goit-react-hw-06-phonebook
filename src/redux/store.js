@@ -16,10 +16,10 @@ import {contactsSlice} from "./contactSlice.js";
 const persistConfig = {
   key: "root",
   storage,
-     whitelist: ['contacts', 'filter'],
+  whitlist: ['value', 'filter'],
   };
 
-const persistedReducer = persistReducer(persistConfig, contactsSlice.reducer)
+const persistedReducer = persistReducer(persistConfig, contactsSlice.reducer);
 
 export const store = configureStore({
     reducer: persistedReducer,
